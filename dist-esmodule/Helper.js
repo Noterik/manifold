@@ -1,9 +1,9 @@
 import { MultiSelectState } from "./MultiSelectState";
 import { MetadataGroup } from "./MetadataGroup";
 import { TreeSortType } from "./TreeSortType";
-import { ServiceProfile, ViewingHint, ViewingDirection } from "@iiif/vocabulary";
+import { ServiceProfile, ViewingHint, ViewingDirection } from "@iiif/vocabulary/dist-commonjs";
 import { Errors } from "./Errors";
-import { LabelValuePair, Language, LanguageMap, ManifestType, TreeNode, TreeNodeType, Utils } from "manifesto.js";
+import { LabelValuePair, LocalizedValue, ManifestType, TreeNode, TreeNodeType, Utils, PropertyValue } from "manifesto.js";
 var Helper = /** @class */ (function () {
     function Helper(options) {
         this.options = options;
@@ -33,7 +33,7 @@ var Helper = /** @class */ (function () {
         }
         var attribution = this.manifest.getAttribution();
         if (attribution) {
-            return LanguageMap.getValue(attribution, this.options.locale);
+            return attribution.getValue(this.options.locale);
         }
         return null;
     };
@@ -122,7 +122,7 @@ var Helper = /** @class */ (function () {
         }
         var description = this.manifest.getDescription();
         if (description) {
-            return LanguageMap.getValue(description, this.options.locale);
+            return description.getValue(this.options.locale);
         }
         return null;
     };
@@ -132,7 +132,7 @@ var Helper = /** @class */ (function () {
         }
         var label = this.manifest.getLabel();
         if (label) {
-            return LanguageMap.getValue(label, this.options.locale);
+            return label.getValue(this.options.locale);
         }
         return null;
     };
@@ -181,14 +181,18 @@ var Helper = /** @class */ (function () {
         }
         if (this.manifest.getDescription().length) {
             var metadataItem = new LabelValuePair(locale);
-            metadataItem.label = [new Language("description", locale)];
+            metadataItem.label = new PropertyValue([
+                new LocalizedValue("description", locale)
+            ]);
             metadataItem.value = this.manifest.getDescription();
             metadataItem.isRootLevel = true;
             manifestGroup.addItem(metadataItem);
         }
         if (this.manifest.getAttribution().length) {
             var metadataItem = new LabelValuePair(locale);
-            metadataItem.label = [new Language("attribution", locale)];
+            metadataItem.label = new PropertyValue([
+                new LocalizedValue("attribution", locale)
+            ]);
             metadataItem.value = this.manifest.getAttribution();
             metadataItem.isRootLevel = true;
             manifestGroup.addItem(metadataItem);
@@ -209,7 +213,7 @@ var Helper = /** @class */ (function () {
         if (this.manifest.getLogo()) {
             var item = {
                 label: "logo",
-                value: '<img src="' + this.manifest.getLogo() + '"/>'
+                value: '<img alt="logo" src="' + this.manifest.getLogo() + '"/>'
             };
             var metadataItem = new LabelValuePair(locale);
             metadataItem.parse(item);
@@ -231,8 +235,10 @@ var Helper = /** @class */ (function () {
         var requiredStatement = this.manifest.getRequiredStatement();
         if (requiredStatement) {
             return {
-                label: requiredStatement.getLabel(),
-                value: requiredStatement.getValue()
+                label: requiredStatement.label ? requiredStatement.getLabel() : "",
+                value: requiredStatement.value && requiredStatement.value.length
+                    ? requiredStatement.getValue()
+                    : ""
             };
         }
         return null;
@@ -316,8 +322,8 @@ var Helper = /** @class */ (function () {
         if (posterCanvas) {
             var content = posterCanvas.getContent();
             if (content && content.length) {
-                var anno = content[0];
-                var body = anno.getBody();
+                var annotation = content[0];
+                var body = annotation.getBody();
                 return body[0].id;
             }
         }
@@ -549,12 +555,11 @@ var Helper = /** @class */ (function () {
                 // expanding a month gives a list of issues.
                 if (this.treeHasNavDates(tree)) {
                     this._getSortedTreeNodesByDate(sortedTree, tree);
-                    break;
+                    return sortedTree;
                 }
-            default:
-                sortedTree = tree;
+                break;
         }
-        return sortedTree;
+        return tree;
     };
     Helper.prototype.treeHasNavDates = function (tree) {
         //const node: TreeNode = tree.nodes.en().traverseUnique(node => node.nodes).where((n) => !isNaN(<any>n.navDate)).first();

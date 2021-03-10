@@ -1,4 +1,4 @@
-import { ServiceProfile } from "@iiif/vocabulary";
+import { ServiceProfile } from "@iiif/vocabulary/dist-commonjs";
 import * as HTTPStatusCode from "@edsilv/http-status-codes";
 import { Utils } from "manifesto.js";
 var ExternalResource = /** @class */ (function () {
@@ -310,14 +310,14 @@ var ExternalResource = /** @class */ (function () {
                     xhr_2.setRequestHeader("Authorization", "Bearer " + accessToken.accessToken);
                 }
                 xhr_2.onload = function () {
-                    var data = JSON.parse(xhr_2.responseText);
                     // if it's a resource without an info.json
                     // todo: if resource doesn't have a @profile
-                    if (!data) {
+                    if (!xhr_2.responseText) {
                         that.status = HTTPStatusCode.OK;
                         resolve(that);
                     }
                     else {
+                        var data = JSON.parse(xhr_2.responseText);
                         var uri = unescape(data["@id"]);
                         that.data = data;
                         that._parseAuthServices(that.data);

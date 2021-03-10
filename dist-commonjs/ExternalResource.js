@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var vocabulary_1 = require("@iiif/vocabulary");
+var dist_commonjs_1 = require("@iiif/vocabulary/dist-commonjs");
 var HTTPStatusCode = require("@edsilv/http-status-codes");
 var manifesto_js_1 = require("manifesto.js");
 var ExternalResource = /** @class */ (function () {
@@ -76,7 +76,7 @@ var ExternalResource = /** @class */ (function () {
         }
         else {
             // Legacy IxIF
-            var service = canvas.getService(vocabulary_1.ServiceProfile.IXIF);
+            var service = canvas.getService(dist_commonjs_1.ServiceProfile.IXIF);
             if (service) {
                 // todo: deprecate
                 return service.getInfoUri();
@@ -87,20 +87,20 @@ var ExternalResource = /** @class */ (function () {
     };
     ExternalResource.prototype._parseAuthServices = function (resource) {
         if (this.authAPIVersion === 0.9) {
-            this.clickThroughService = manifesto_js_1.Utils.getService(resource, vocabulary_1.ServiceProfile.AUTH_0_CLICK_THROUGH);
-            this.loginService = manifesto_js_1.Utils.getService(resource, vocabulary_1.ServiceProfile.AUTH_0_LOGIN);
-            this.restrictedService = manifesto_js_1.Utils.getService(resource, vocabulary_1.ServiceProfile.AUTH_0_RESTRICTED);
+            this.clickThroughService = manifesto_js_1.Utils.getService(resource, dist_commonjs_1.ServiceProfile.AUTH_0_CLICK_THROUGH);
+            this.loginService = manifesto_js_1.Utils.getService(resource, dist_commonjs_1.ServiceProfile.AUTH_0_LOGIN);
+            this.restrictedService = manifesto_js_1.Utils.getService(resource, dist_commonjs_1.ServiceProfile.AUTH_0_RESTRICTED);
             if (this.clickThroughService) {
-                this.logoutService = this.clickThroughService.getService(vocabulary_1.ServiceProfile.AUTH_0_LOGOUT);
-                this.tokenService = this.clickThroughService.getService(vocabulary_1.ServiceProfile.AUTH_0_TOKEN);
+                this.logoutService = this.clickThroughService.getService(dist_commonjs_1.ServiceProfile.AUTH_0_LOGOUT);
+                this.tokenService = this.clickThroughService.getService(dist_commonjs_1.ServiceProfile.AUTH_0_TOKEN);
             }
             else if (this.loginService) {
-                this.logoutService = this.loginService.getService(vocabulary_1.ServiceProfile.AUTH_0_LOGOUT);
-                this.tokenService = this.loginService.getService(vocabulary_1.ServiceProfile.AUTH_0_TOKEN);
+                this.logoutService = this.loginService.getService(dist_commonjs_1.ServiceProfile.AUTH_0_LOGOUT);
+                this.tokenService = this.loginService.getService(dist_commonjs_1.ServiceProfile.AUTH_0_TOKEN);
             }
             else if (this.restrictedService) {
-                this.logoutService = this.restrictedService.getService(vocabulary_1.ServiceProfile.AUTH_0_LOGOUT);
-                this.tokenService = this.restrictedService.getService(vocabulary_1.ServiceProfile.AUTH_0_TOKEN);
+                this.logoutService = this.restrictedService.getService(dist_commonjs_1.ServiceProfile.AUTH_0_LOGOUT);
+                this.tokenService = this.restrictedService.getService(dist_commonjs_1.ServiceProfile.AUTH_0_TOKEN);
             }
         }
         else {
@@ -116,29 +116,29 @@ var ExternalResource = /** @class */ (function () {
                     }
                 }
             }
-            this.clickThroughService = manifesto_js_1.Utils.getService(resource, vocabulary_1.ServiceProfile.AUTH_1_CLICK_THROUGH);
-            this.loginService = manifesto_js_1.Utils.getService(resource, vocabulary_1.ServiceProfile.AUTH_1_LOGIN);
-            this.externalService = manifesto_js_1.Utils.getService(resource, vocabulary_1.ServiceProfile.AUTH_1_EXTERNAL);
-            this.kioskService = manifesto_js_1.Utils.getService(resource, vocabulary_1.ServiceProfile.AUTH_1_KIOSK);
+            this.clickThroughService = manifesto_js_1.Utils.getService(resource, dist_commonjs_1.ServiceProfile.AUTH_1_CLICK_THROUGH);
+            this.loginService = manifesto_js_1.Utils.getService(resource, dist_commonjs_1.ServiceProfile.AUTH_1_LOGIN);
+            this.externalService = manifesto_js_1.Utils.getService(resource, dist_commonjs_1.ServiceProfile.AUTH_1_EXTERNAL);
+            this.kioskService = manifesto_js_1.Utils.getService(resource, dist_commonjs_1.ServiceProfile.AUTH_1_KIOSK);
             if (this.clickThroughService) {
-                this.logoutService = this.clickThroughService.getService(vocabulary_1.ServiceProfile.AUTH_1_LOGOUT);
-                this.tokenService = this.clickThroughService.getService(vocabulary_1.ServiceProfile.AUTH_1_TOKEN);
-                this.probeService = this.clickThroughService.getService(vocabulary_1.ServiceProfile.AUTH_1_PROBE);
+                this.logoutService = this.clickThroughService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_LOGOUT);
+                this.tokenService = this.clickThroughService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_TOKEN);
+                this.probeService = this.clickThroughService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_PROBE);
             }
             else if (this.loginService) {
-                this.logoutService = this.loginService.getService(vocabulary_1.ServiceProfile.AUTH_1_LOGOUT);
-                this.tokenService = this.loginService.getService(vocabulary_1.ServiceProfile.AUTH_1_TOKEN);
-                this.probeService = this.loginService.getService(vocabulary_1.ServiceProfile.AUTH_1_PROBE);
+                this.logoutService = this.loginService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_LOGOUT);
+                this.tokenService = this.loginService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_TOKEN);
+                this.probeService = this.loginService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_PROBE);
             }
             else if (this.externalService) {
-                this.logoutService = this.externalService.getService(vocabulary_1.ServiceProfile.AUTH_1_LOGOUT);
-                this.tokenService = this.externalService.getService(vocabulary_1.ServiceProfile.AUTH_1_TOKEN);
-                this.probeService = this.externalService.getService(vocabulary_1.ServiceProfile.AUTH_1_PROBE);
+                this.logoutService = this.externalService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_LOGOUT);
+                this.tokenService = this.externalService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_TOKEN);
+                this.probeService = this.externalService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_PROBE);
             }
             else if (this.kioskService) {
-                this.logoutService = this.kioskService.getService(vocabulary_1.ServiceProfile.AUTH_1_LOGOUT);
-                this.tokenService = this.kioskService.getService(vocabulary_1.ServiceProfile.AUTH_1_TOKEN);
-                this.probeService = this.kioskService.getService(vocabulary_1.ServiceProfile.AUTH_1_PROBE);
+                this.logoutService = this.kioskService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_LOGOUT);
+                this.tokenService = this.kioskService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_TOKEN);
+                this.probeService = this.kioskService.getService(dist_commonjs_1.ServiceProfile.AUTH_1_PROBE);
             }
         }
     };
@@ -312,14 +312,14 @@ var ExternalResource = /** @class */ (function () {
                     xhr_2.setRequestHeader("Authorization", "Bearer " + accessToken.accessToken);
                 }
                 xhr_2.onload = function () {
-                    var data = JSON.parse(xhr_2.responseText);
                     // if it's a resource without an info.json
                     // todo: if resource doesn't have a @profile
-                    if (!data) {
+                    if (!xhr_2.responseText) {
                         that.status = HTTPStatusCode.OK;
                         resolve(that);
                     }
                     else {
+                        var data = JSON.parse(xhr_2.responseText);
                         var uri = unescape(data["@id"]);
                         that.data = data;
                         that._parseAuthServices(that.data);

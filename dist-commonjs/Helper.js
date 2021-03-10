@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var MultiSelectState_1 = require("./MultiSelectState");
 var MetadataGroup_1 = require("./MetadataGroup");
 var TreeSortType_1 = require("./TreeSortType");
-var vocabulary_1 = require("@iiif/vocabulary");
+var dist_commonjs_1 = require("@iiif/vocabulary/dist-commonjs");
 var Errors_1 = require("./Errors");
 var manifesto_js_1 = require("manifesto.js");
 var Helper = /** @class */ (function () {
@@ -22,9 +22,9 @@ var Helper = /** @class */ (function () {
         var service = this.getSearchService();
         var autoCompleteService = null;
         if (service) {
-            autoCompleteService = service.getService(vocabulary_1.ServiceProfile.SEARCH_0_AUTO_COMPLETE);
+            autoCompleteService = service.getService(dist_commonjs_1.ServiceProfile.SEARCH_0_AUTO_COMPLETE);
             if (!autoCompleteService) {
-                autoCompleteService = service.getService(vocabulary_1.ServiceProfile.SEARCH_1_AUTO_COMPLETE);
+                autoCompleteService = service.getService(dist_commonjs_1.ServiceProfile.SEARCH_1_AUTO_COMPLETE);
             }
         }
         return autoCompleteService;
@@ -35,7 +35,7 @@ var Helper = /** @class */ (function () {
         }
         var attribution = this.manifest.getAttribution();
         if (attribution) {
-            return manifesto_js_1.LanguageMap.getValue(attribution, this.options.locale);
+            return attribution.getValue(this.options.locale);
         }
         return null;
     };
@@ -124,7 +124,7 @@ var Helper = /** @class */ (function () {
         }
         var description = this.manifest.getDescription();
         if (description) {
-            return manifesto_js_1.LanguageMap.getValue(description, this.options.locale);
+            return description.getValue(this.options.locale);
         }
         return null;
     };
@@ -134,7 +134,7 @@ var Helper = /** @class */ (function () {
         }
         var label = this.manifest.getLabel();
         if (label) {
-            return manifesto_js_1.LanguageMap.getValue(label, this.options.locale);
+            return label.getValue(this.options.locale);
         }
         return null;
     };
@@ -183,14 +183,18 @@ var Helper = /** @class */ (function () {
         }
         if (this.manifest.getDescription().length) {
             var metadataItem = new manifesto_js_1.LabelValuePair(locale);
-            metadataItem.label = [new manifesto_js_1.Language("description", locale)];
+            metadataItem.label = new manifesto_js_1.PropertyValue([
+                new manifesto_js_1.LocalizedValue("description", locale)
+            ]);
             metadataItem.value = this.manifest.getDescription();
             metadataItem.isRootLevel = true;
             manifestGroup.addItem(metadataItem);
         }
         if (this.manifest.getAttribution().length) {
             var metadataItem = new manifesto_js_1.LabelValuePair(locale);
-            metadataItem.label = [new manifesto_js_1.Language("attribution", locale)];
+            metadataItem.label = new manifesto_js_1.PropertyValue([
+                new manifesto_js_1.LocalizedValue("attribution", locale)
+            ]);
             metadataItem.value = this.manifest.getAttribution();
             metadataItem.isRootLevel = true;
             manifestGroup.addItem(metadataItem);
@@ -211,7 +215,7 @@ var Helper = /** @class */ (function () {
         if (this.manifest.getLogo()) {
             var item = {
                 label: "logo",
-                value: '<img src="' + this.manifest.getLogo() + '"/>'
+                value: '<img alt="logo" src="' + this.manifest.getLogo() + '"/>'
             };
             var metadataItem = new manifesto_js_1.LabelValuePair(locale);
             metadataItem.parse(item);
@@ -233,8 +237,10 @@ var Helper = /** @class */ (function () {
         var requiredStatement = this.manifest.getRequiredStatement();
         if (requiredStatement) {
             return {
-                label: requiredStatement.getLabel(),
-                value: requiredStatement.getValue()
+                label: requiredStatement.label ? requiredStatement.getLabel() : "",
+                value: requiredStatement.value && requiredStatement.value.length
+                    ? requiredStatement.getValue()
+                    : ""
             };
         }
         return null;
@@ -318,8 +324,8 @@ var Helper = /** @class */ (function () {
         if (posterCanvas) {
             var content = posterCanvas.getContent();
             if (content && content.length) {
-                var anno = content[0];
-                var body = anno.getBody();
+                var annotation = content[0];
+                var body = annotation.getBody();
                 return body[0].id;
             }
         }
@@ -442,9 +448,9 @@ var Helper = /** @class */ (function () {
         if (!this.manifest) {
             throw new Error(Errors_1.Errors.manifestNotLoaded);
         }
-        var service = this.manifest.getService(vocabulary_1.ServiceProfile.SEARCH_0);
+        var service = this.manifest.getService(dist_commonjs_1.ServiceProfile.SEARCH_0);
         if (!service) {
-            service = this.manifest.getService(vocabulary_1.ServiceProfile.SEARCH_1);
+            service = this.manifest.getService(dist_commonjs_1.ServiceProfile.SEARCH_1);
         }
         return service;
     };
@@ -465,7 +471,7 @@ var Helper = /** @class */ (function () {
             throw new Error(Errors_1.Errors.manifestNotLoaded);
         }
         var url = null;
-        var shareService = this.manifest.getService(vocabulary_1.ServiceProfile.SHARE_EXTENSIONS);
+        var shareService = this.manifest.getService(dist_commonjs_1.ServiceProfile.SHARE_EXTENSIONS);
         if (shareService) {
             if (shareService.length) {
                 shareService = shareService[0];
@@ -551,12 +557,11 @@ var Helper = /** @class */ (function () {
                 // expanding a month gives a list of issues.
                 if (this.treeHasNavDates(tree)) {
                     this._getSortedTreeNodesByDate(sortedTree, tree);
-                    break;
+                    return sortedTree;
                 }
-            default:
-                sortedTree = tree;
+                break;
         }
-        return sortedTree;
+        return tree;
     };
     Helper.prototype.treeHasNavDates = function (tree) {
         //const node: TreeNode = tree.nodes.en().traverseUnique(node => node.nodes).where((n) => !isNaN(<any>n.navDate)).first();
@@ -609,7 +614,7 @@ var Helper = /** @class */ (function () {
     Helper.prototype.isBottomToTop = function () {
         var viewingDirection = this.getViewingDirection();
         if (viewingDirection) {
-            return viewingDirection === vocabulary_1.ViewingDirection.BOTTOM_TO_TOP;
+            return viewingDirection === dist_commonjs_1.ViewingDirection.BOTTOM_TO_TOP;
         }
         return false;
     };
@@ -619,7 +624,7 @@ var Helper = /** @class */ (function () {
     Helper.prototype.isContinuous = function () {
         var viewingHint = this.getViewingHint();
         if (viewingHint) {
-            return viewingHint === vocabulary_1.ViewingHint.CONTINUOUS;
+            return viewingHint === dist_commonjs_1.ViewingHint.CONTINUOUS;
         }
         return false;
     };
@@ -641,7 +646,7 @@ var Helper = /** @class */ (function () {
     Helper.prototype.isLeftToRight = function () {
         var viewingDirection = this.getViewingDirection();
         if (viewingDirection) {
-            return viewingDirection === vocabulary_1.ViewingDirection.LEFT_TO_RIGHT;
+            return viewingDirection === dist_commonjs_1.ViewingDirection.LEFT_TO_RIGHT;
         }
         return false;
     };
@@ -661,7 +666,7 @@ var Helper = /** @class */ (function () {
         // check the sequence for a viewingHint (deprecated)
         var viewingHint = this.getViewingHint();
         if (viewingHint) {
-            return viewingHint === vocabulary_1.ViewingHint.PAGED;
+            return viewingHint === dist_commonjs_1.ViewingHint.PAGED;
         }
         // check the manifest for a viewingHint (deprecated) or paged behavior
         return this.manifest.isPagingEnabled();
@@ -680,14 +685,14 @@ var Helper = /** @class */ (function () {
     Helper.prototype.isRightToLeft = function () {
         var viewingDirection = this.getViewingDirection();
         if (viewingDirection) {
-            return viewingDirection === vocabulary_1.ViewingDirection.RIGHT_TO_LEFT;
+            return viewingDirection === dist_commonjs_1.ViewingDirection.RIGHT_TO_LEFT;
         }
         return false;
     };
     Helper.prototype.isTopToBottom = function () {
         var viewingDirection = this.getViewingDirection();
         if (viewingDirection) {
-            return viewingDirection === vocabulary_1.ViewingDirection.TOP_TO_BOTTOM;
+            return viewingDirection === dist_commonjs_1.ViewingDirection.TOP_TO_BOTTOM;
         }
         return false;
     };
@@ -698,7 +703,7 @@ var Helper = /** @class */ (function () {
         if (!this.manifest) {
             throw new Error(Errors_1.Errors.manifestNotLoaded);
         }
-        var uiExtensions = this.manifest.getService(vocabulary_1.ServiceProfile.UI_EXTENSIONS);
+        var uiExtensions = this.manifest.getService(dist_commonjs_1.ServiceProfile.UI_EXTENSIONS);
         if (uiExtensions) {
             var disableUI = uiExtensions.getProperty("disableUI");
             if (disableUI) {

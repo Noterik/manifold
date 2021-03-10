@@ -4,7 +4,7 @@ import { MetadataOptions } from "./MetadataOptions";
 import { MetadataGroup } from "./MetadataGroup";
 import { ILabelValuePair } from "./ILabelValuePair";
 import { TreeSortType } from "./TreeSortType";
-import { ViewingHint, ViewingDirection } from "@iiif/vocabulary";
+import { ViewingHint, ViewingDirection } from "@iiif/vocabulary/dist-commonjs";
 import { Canvas, IIIFResource, Manifest, ManifestType, Range, Service, Sequence, Thumb, TreeNode } from "manifesto.js";
 export declare class Helper {
     private _multiSelectState;

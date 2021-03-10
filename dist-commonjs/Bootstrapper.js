@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Helper_1 = require("./Helper");
-var vocabulary_1 = require("@iiif/vocabulary");
+var dist_commonjs_1 = require("@iiif/vocabulary/dist-commonjs");
 var manifesto_js_1 = require("manifesto.js");
 var Bootstrapper = /** @class */ (function () {
     function Bootstrapper(options) {
@@ -37,7 +37,7 @@ var Bootstrapper = /** @class */ (function () {
             }
             var collectionIndex = bootstrapper._options.collectionIndex; // this is either undefined, 0, or a positive number (defaults to undefined)
             var manifestIndex_1 = bootstrapper._options.manifestIndex; // this is either 0 or a positive number (defaults to 0)
-            if (iiifResource.getIIIFResourceType() === vocabulary_1.IIIFResourceType.COLLECTION) {
+            if (iiifResource.getIIIFResourceType() === dist_commonjs_1.IIIFResourceType.COLLECTION) {
                 // it's a collection
                 var manifests = iiifResource.getManifests();
                 var collections = (iiifResource).getCollections();
